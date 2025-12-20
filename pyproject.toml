@@ -36,7 +36,8 @@ research = [
 
 [project.urls]
 "Homepage" = "https://aipricepatterns.com"
-"Bug Tracker" = "https://github.com/yourusername/aipricepatterns/issues"
+"Bug Tracker" = "https://github.com/sergio12S/aipp/issues"
+"Source" = "https://github.com/sergio12S/aipp"
 
 [project.scripts]
 aipp = "aipricepatterns.cli:main"

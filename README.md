@@ -1,6 +1,8 @@
-# AI Price Patterns Python SDK
+# AI Price Patterns Python SDK (`aipp`)
 
 The official Python client for [AI Price Patterns](https://aipricepatterns.com) - the search engine for financial price action.
+
+[Source Code](https://github.com/sergio12S/aipp) | [Bug Tracker](https://github.com/sergio12S/aipp/issues)
 
 This library allows Quants and Traders to programmatically access our pattern matching engine, run walk-forward backtests, and integrate "Market Memory" into their existing ML and Reinforcement Learning pipelines.
 
