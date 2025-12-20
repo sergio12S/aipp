@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aipricepatterns"
+version = "0.1.0"
+description = "Python client for AI Price Patterns API - Search engine for financial price action"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests>=2.25.0",
+    "pandas>=1.0.0",
+    "numpy>=1.20.0",
+    "plotly>=5.0.0",
+    "matplotlib>=3.3.0",
+    "tqdm>=4.60.0",
+    "rich>=10.0.0",
+]
+
+[project.optional-dependencies]
+rl = [
+    "stable-baselines3>=2.0.0",
+    "gymnasium>=0.26.0",
+    "shimmy>=0.2.1",
+]
+research = [
+    "jupyter>=1.0.0",
+    "scikit-learn>=1.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://aipricepatterns.com"
+"Bug Tracker" = "https://github.com/yourusername/aipricepatterns/issues"
+
+[project.scripts]
+aipp = "aipricepatterns.cli:main"
