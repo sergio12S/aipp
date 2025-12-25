@@ -22,6 +22,7 @@ Our "Proof of Value" is dynamic. You can run our automated scripts to verify per
 
 - **Zero Black-Box Risk**: Every signal is backed by a forensic trail of historical analogues.
 - **Quant-Ready SDK**: Seamlessly integrate patterns into your Python (SB3/RL) or C++ pipelines.
+- **High-Performance Infrastructure**: Proprietary Rust engine with SIMD-accelerated HNSW search for sub-10ms results.
 - **Regime Adaptive**: Native support for structural market shifts, reducing drawdowns during high-volatility events.
 
 **Contact Us:** To discuss custom data indexing, on-premise installation, or proprietary research mandates, please visit [aipricepatterns.com](https://aipricepatterns.com).
