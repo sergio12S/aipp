@@ -1,6 +1,7 @@
-import requests
+from typing import Any, Dict, List, Optional
+
 import pandas as pd
-from typing import Optional, List, Dict, Union, Any
+import requests
 
 
 class Client:
@@ -47,6 +48,7 @@ class Client:
         sort: str = "similarity",
         force: bool = False,
         anchor_ts: Optional[int] = None,
+        cross_asset: bool = False,
     ) -> Dict[str, Any]:
         """
         Search for historical patterns similar to the current price action.
@@ -63,6 +65,7 @@ class Client:
         :param sort: Sort mode ('similarity', 'recent', 'historic', 'corr', 'rmse').
         :param force: Force-refresh candles from Binance.
         :param anchor_ts: Pin the last bar to a specific timestamp.
+        :param cross_asset: If true, search across all indexed symbols for matches.
         :return: Dictionary containing matches and forecast data.
         """
         params = {
@@ -73,6 +76,7 @@ class Client:
             "limit": top_k,
             "sort": sort,
             "force": str(force).lower(),
+            "crossAsset": str(cross_asset).lower(),
         }
         if start is not None:
             params["start"] = start
@@ -138,6 +142,12 @@ class Client:
         :param requests: List of dictionaries, each containing search params (symbol, interval, q, f, etc.)
         """
         return self._post("/api/patterns/batch", json={"requests": requests})
+
+    def get_signals(self) -> Dict[str, Any]:
+        """
+        Retrieves the latest high-probability signals discovered by the background scanner.
+        """
+        return self._get("/api/patterns/signals")
 
     def get_match_details(self, match_id: str) -> Dict[str, Any]:
         """
@@ -407,48 +417,14 @@ class Client:
         """
         return self._get("/ann/status")
 
-    def get_dataset_status(self) -> Dict[str, Any]:
+    def get_dataset_status(self, symbol: Optional[str] = None) -> Dict[str, Any]:
         """
         Get status of loaded datasets (symbols, candle counts, etc.).
         """
-        return self._get("/api/dataset/status")
-
-    def get_rl_episodes(
-        self,
-        symbol: str = "BTCUSDT",
-        interval: str = "1h",
-        current_state: Optional[List[float]] = None,
-        anchor_ts: Optional[int] = None,
-        forecast_horizon: int = 24,
-        num_episodes: int = 50,
-        min_similarity: float = 0.75,
-        include_actions: bool = False,
-        reward_type: str = "returns",
-        sampling_strategy: str = "uniform",
-    ) -> Dict[str, Any]:
-        """
-        Returns similar historical episodes for training RL agents.
-        """
-        if current_state is None and anchor_ts is None:
-            raise ValueError("Provide one of: current_state or anchor_ts")
-        if current_state is not None and anchor_ts is not None:
-            raise ValueError("Provide only one of: current_state or anchor_ts")
-
-        payload = {
-            "symbol": symbol,
-            "interval": interval,
-            "forecastHorizon": forecast_horizon,
-            "numEpisodes": num_episodes,
-            "minSimilarity": min_similarity,
-            "includeActions": include_actions,
-            "rewardType": reward_type,
-            "samplingStrategy": sampling_strategy,
-        }
-        if current_state is not None:
-            payload["currentState"] = current_state
-        if anchor_ts is not None:
-            payload["anchorTs"] = anchor_ts
-        return self._post("/api/rl/episodes", json=payload)
+        params = {}
+        if symbol:
+            params["symbol"] = symbol
+        return self._get("/api/dataset/status", params=params)
 
     def get_recent_prices(
         self, symbol: str, interval: str = "1h", limit: int = 40

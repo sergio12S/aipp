@@ -153,3 +153,4 @@ cython_debug/
 # Research cache
 research/_cache/
 **/_cache/
+python-sdk/

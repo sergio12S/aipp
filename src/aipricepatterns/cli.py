@@ -21,7 +21,6 @@ from typing import Any, Dict, List, Optional
 from .analysis import BacktestAuditor
 from .client import Client
 
-
 # For production use: https://aipricepatterns.com/api/rust
 # For local use: http://localhost:8787
 DEFAULT_BASE_URL = os.getenv("AIPP_BASE_URL", "https://aipricepatterns.com/api/rust")
@@ -101,9 +100,10 @@ def cmd_search(common: CommonArgs, args: argparse.Namespace) -> int:
         interval=args.interval,
         q=args.q,
         f=args.f,
-        top_k=args.limit,
+        limit=args.limit,
         sort=args.sort,
         force=args.force,
+        cross_asset=getattr(args, "cross_asset", False),
     )
 
     matches = res.get("matches") or []
@@ -140,6 +140,39 @@ def cmd_search(common: CommonArgs, args: argparse.Namespace) -> int:
         ):
             pct = (end_price - start_price) / start_price * 100
             print(f"Forecast (median): {pct:+.2f}% over {len(median)} points")
+
+    if args.raw:
+        print("\nRAW JSON")
+        print(_json_dump(res))
+
+    return 0
+
+
+def cmd_signals(common: CommonArgs, args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    res = client.get_signals()
+
+    signals = res.get("signals") or []
+
+    print("=" * 78)
+    print("LIVE SIGNALS")
+    print("=" * 78)
+    print(f"Signals found: {len(signals)}")
+
+    if signals:
+        print(f"{'SYMBOL':10s} {'INT':4s} {'DIR':5s} {'PROB':6s} {'SIM':6s} {'TS'}")
+        print("-" * 78)
+        for s in signals:
+            sym = s.get("symbol", "n/a")
+            interval = s.get("interval", "n/a")
+            direction = s.get("direction", "n/a")
+            prob = s.get("up_prob")
+            prob_s = f"{prob:.2f}" if isinstance(prob, (int, float)) else "n/a"
+            sim = s.get("similarity")
+            sim_s = f"{sim:.2f}" if isinstance(sim, (int, float)) else "n/a"
+            ts = s.get("ts")
+            dt = _fmt_dt(ts) if isinstance(ts, int) else "n/a"
+            print(f"{sym:10s} {interval:4s} {direction:5s} {prob_s:6s} {sim_s:6s} {dt}")
 
     if args.raw:
         print("\nRAW JSON")
@@ -897,6 +930,118 @@ def cmd_rl_training_batch(common: CommonArgs, args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_dataset_status(common: CommonArgs, args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    res = client.get_dataset_status(symbol=args.symbol)
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_dataset_expand(common: CommonArgs, args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    res = client.expand_dataset(
+        symbol=args.symbol,
+        interval=args.interval,
+        bars=args.bars,
+        since=args.since,
+    )
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_dataset_delete(common: CommonArgs, args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    res = client.delete_dataset(
+        symbol=args.symbol,
+        interval=args.interval,
+        from_ts=args.from_ts,
+        to_ts=args.to_ts,
+    )
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_dataset_stats(common: CommonArgs, _args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    res = client.get_dataset_stats()
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_dataset_gaps(common: CommonArgs, args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    res = client.get_dataset_gaps(symbol=args.symbol, interval=args.interval)
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_dataset_vectors(common: CommonArgs, _args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    res = client.get_dataset_vectors()
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_regime_catalog(common: CommonArgs, args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    res = client.get_rl_regimes(symbol=args.symbol, interval=args.interval)
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_regime_detect(common: CommonArgs, args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    current_state = (
+        _parse_float_list(args.current_state) if args.current_state else None
+    )
+    res = client.detect_regime(
+        symbol=args.symbol,
+        interval=args.interval,
+        query_length=args.query_length,
+        timestamp=args.timestamp,
+        current_state=current_state,
+    )
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_regime_latest(common: CommonArgs, args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    res = client.get_current_regime(
+        symbol=args.symbol, interval=args.interval, query_length=args.query_length
+    )
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_ann_status(common: CommonArgs, _args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    res = client.get_ann_status()
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_ann_search(common: CommonArgs, args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    vector = _parse_float_list(args.vector)
+    res = client.ann_search(vector=vector, k=args.k, ef=args.ef)
+    print(_json_dump(res))
+    return 0
+
+
+def cmd_ann_upsert(common: CommonArgs, args: argparse.Namespace) -> int:
+    client = _make_client(common)
+    vector = _parse_float_list(args.vector)
+    res = client.ann_upsert(
+        id=args.id,
+        vector=vector,
+        symbol=args.symbol,
+        interval=args.interval,
+    )
+    print(_json_dump(res))
+    return 0
+
+
 def cmd_audit(common: CommonArgs, args: argparse.Namespace) -> int:
     client = _make_client(common)
     start_ts = _backtest_period_start(args.days)
@@ -1191,8 +1336,91 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--limit", type=int, default=20)
     s.add_argument("--sort", default="similarity")
     s.add_argument("--force", action="store_true")
+    s.add_argument(
+        "--cross-asset", action="store_true", help="Search across all symbols"
+    )
     s.add_argument("--raw", action="store_true")
     s.set_defaults(func=cmd_search)
+
+    sig = sub.add_parser("signals", help="GET /api/patterns/signals")
+    sig.add_argument("--raw", action="store_true")
+    sig.set_defaults(func=cmd_signals)
+
+    # --- Dataset Group ---
+    ds = sub.add_parser("dataset", help="Dataset management")
+    ds_sub = ds.add_subparsers(dest="subcmd", required=True)
+
+    dst = ds_sub.add_parser("status", help="Get dataset status")
+    dst.add_argument("--symbol", help="Optional symbol filter")
+    dst.set_defaults(func=cmd_dataset_status)
+
+    dse = ds_sub.add_parser("expand", help="Expand dataset")
+    dse.add_argument("--symbol", required=True)
+    dse.add_argument("--interval", required=True)
+    dse.add_argument("--bars", type=int)
+    dse.add_argument("--since", type=int)
+    dse.set_defaults(func=cmd_dataset_expand)
+
+    dsd = ds_sub.add_parser("delete", help="Delete dataset range")
+    dsd.add_argument("--symbol", required=True)
+    dsd.add_argument("--interval", required=True)
+    dsd.add_argument("--from-ts", type=int)
+    dsd.add_argument("--to-ts", type=int)
+    dsd.set_defaults(func=cmd_dataset_delete)
+
+    dsts = ds_sub.add_parser("stats", help="Get dataset stats")
+    dsts.set_defaults(func=cmd_dataset_stats)
+
+    dsg = ds_sub.add_parser("gaps", help="Detect dataset gaps")
+    dsg.add_argument("--symbol", required=True)
+    dsg.add_argument("--interval", required=True)
+    dsg.set_defaults(func=cmd_dataset_gaps)
+
+    dsv = ds_sub.add_parser("vectors", help="List vector datasets")
+    dsv.set_defaults(func=cmd_dataset_vectors)
+
+    # --- Regime Group ---
+    reg = sub.add_parser("regime", help="Market regime analysis")
+    reg_sub = reg.add_subparsers(dest="subcmd", required=True)
+
+    rc = reg_sub.add_parser("catalog", help="List all regimes")
+    rc.add_argument("--symbol", default="BTCUSDT")
+    rc.add_argument("--interval", default="1h")
+    rc.set_defaults(func=cmd_regime_catalog)
+
+    rd = reg_sub.add_parser("detect", help="Detect regime for state/ts")
+    rd.add_argument("--symbol", default="BTCUSDT")
+    rd.add_argument("--interval", default="1h")
+    rd.add_argument("--query-length", type=int, default=40)
+    rd.add_argument("--timestamp", type=int)
+    rd.add_argument("--current-state", help="JSON array or CSV")
+    rd.set_defaults(func=cmd_regime_detect)
+
+    rl = reg_sub.add_parser("latest", help="Get current regime")
+    rl.add_argument("--symbol", default="BTCUSDT")
+    rl.add_argument("--interval", default="1h")
+    rl.add_argument("--query-length", type=int, default=40)
+    rl.set_defaults(func=cmd_regime_latest)
+
+    # --- ANN Group ---
+    ann = sub.add_parser("ann", help="ANN index operations")
+    ann_sub = ann.add_subparsers(dest="subcmd", required=True)
+
+    as1 = ann_sub.add_parser("status", help="Get ANN status")
+    as1.set_defaults(func=cmd_ann_status)
+
+    as2 = ann_sub.add_parser("search", help="Search ANN index")
+    as2.add_argument("--vector", required=True, help="JSON array or CSV")
+    as2.add_argument("--k", type=int, default=10)
+    as2.add_argument("--ef", type=int, default=64)
+    as2.set_defaults(func=cmd_ann_search)
+
+    au = ann_sub.add_parser("upsert", help="Upsert to ANN index")
+    au.add_argument("--id", type=int, required=True)
+    au.add_argument("--vector", required=True, help="JSON array or CSV")
+    au.add_argument("--symbol", required=True)
+    au.add_argument("--interval", required=True)
+    au.set_defaults(func=cmd_ann_upsert)
 
     m = sub.add_parser("metrics", help="GET /api/patterns/metrics")
     m.add_argument("--symbol", required=True)

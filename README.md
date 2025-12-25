@@ -31,17 +31,26 @@ from aipricepatterns import Client
 client = Client()
 ```
 
-### 2. Find Similar Patterns (Idea Generation)
+### 2. Live Signals & Pattern Search
 
-Find historical analogues for the current BTC price action.
+Get the latest high-probability signals from our background scanner.
 
 ```python
-# Search for patterns similar to the last 60 hours of BTCUSDT
-results = client.search(symbol="BTCUSDT", interval="1h", q=60, top_k=5)
+# Get latest scanners findings
+signals = client.get_signals()
+for s in signals['signals']:
+    print(f"{s['symbol']} {s['direction']} (prob: {s['up_prob']:.2f})")
+```
+
+Find historical analogues for a specific price action (with cross-asset support).
+
+```python
+# Search for patterns similar to the last 60 hours of BTCUSDT across all assets
+results = client.search(symbol="BTCUSDT", interval="1h", q=60, top_k=5, cross_asset=True)
 
 print(f"Found {len(results['matches'])} matches.")
 for match in results['matches']:
-    print(f"Date: {match['date']}, Similarity: {match['similarity']:.2f}%")
+    print(f"Date: {match['date']}, Asset: {match['symbol']}, Similarity: {match['similarity']:.2f}%")
 ```
 
 ### 3. Run a Walk-Forward Backtest (Validation)
@@ -110,8 +119,11 @@ export AIPP_SLIPPAGE_PCT="0.02"
 ```
 
 ```bash
-# Pattern search
-aipp --base-url https://aipricepatterns.com/api/rust search --symbol BTCUSDT --interval 1h --q 60 --f 30 --limit 20
+# Get live signals
+aipp signals
+
+# Pattern search (with cross-asset)
+aipp search --symbol BTCUSDT --interval 1h --q 60 --f 30 --limit 10 --cross-asset
 
 # Watchlist heartbeat (GO/NO-GO)
 aipp --base-url https://aipricepatterns.com/api/rust scan \
@@ -142,18 +154,29 @@ aipp --base-url https://aipricepatterns.com/api/rust rl-episodes \
     --forecast-horizon 24 --num-episodes 50 --min-similarity 0.80
 
 # RL: get flattened (s, r, s', d) arrays for offline RL
-aipp --base-url https://aipricepatterns.com/api/rust rl-training-batch \
+aipp rl-training-batch \
     --symbol BTCUSDT --interval 1h \
     --query-length 40 --forecast-horizon 24 \
     --batch-size 1000 --min-similarity 0.70
+
+# Dataset Management
+aipp dataset status --symbol BTCUSDT
+aipp dataset stats
+
+# Regime Analysis
+aipp regime latest --symbol BTCUSDT --interval 4h
+
+# ANN Index Operations
+aipp ann status
 ```
 
 ## Features
 
-- **Pattern Search:** Find nearest neighbors in high-dimensional space using HNSW.
-- **Walk-Forward Backtesting:** Strict, look-ahead bias free simulation.
-- **Pandas Integration:** Native support for DataFrames.
-- **Regime Awareness:** Detect current regimes and use them in `aipp scan` / `aipp audit`.
+- **Live Signals:** Background scanner discovers high-probability setups across all pairs.
+- **Pattern Search:** Find nearest neighbors in high-dimensional space using HNSW (cross-asset supported).
+- **Walk-Forward Backtesting:** Strict, look-ahead bias free simulation with institutional metrics.
+- **Dataset & ANN Management:** Programmatically expand history or manage vector indices.
+- **Regime Awareness:** Detect current market environments (e.g. VOLATILE_UPTREND).
 
 ## Requirements
 
