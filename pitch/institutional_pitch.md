@@ -62,8 +62,12 @@ For Quant teams, AIPP acts as a "Feature Factory."
 ---
 
 ## 7. Performance & Case Studies
-- **Alpha Generation**: Demonstrable alpha over buy-and-hold benchmarks across multiple market regimes (2022 Bear, 2023 Recovery, 2024 Bull).
-- **Drawdown Protection**: Regime-aware filtering has historically reduced maximum drawdowns by avoiding "trap" patterns in high-volatility environments.
+- **Extreme Event Proof**: How AIPP identified the bottom during the **SVB Financial Crisis (March 2023)**.
+- **Regime-Adaptive Alpha**: Performance benchmarks across 2022 Bear and 2024 Bull environments.
+- **Cross-Asset Edge**: Leveraging pattern transfers between correlated asset classes.
+
+> [!TIP]
+> **View Evidence**: Detailed case studies and audit data are available in our [Institutional Evidence Base](file:///Users/serg/projects/aipp_research/aipp/pitch/evidence/).
 
 ---
 

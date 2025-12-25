@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-12-25T10:34:49.217936",
+  "config": {
+    "symbol": "BTCUSDT",
+    "interval": "1h"
+  },
+  "leakage_test": {
+    "passed": true,
+    "total_checked": 100,
+    "future_matches_found": 0,
+    "anchor_date": "2025-06-28T08:34:49.217000+00:00",
+    "details": []
+  },
+  "regime_performance": [
+    {
+      "period": "Bear/Neutral 2022",
+      "total_return": -81.06438603473251,
+      "benchmark": -64.18608849906887,
+      "profit_factor": 0.7340003895457844,
+      "win_rate": 42.465753424657535,
+      "sharpe": -2.0423084680589865
+    },
+    {
+      "period": "Bull Market 2024",
+      "total_return": -30.30034127737182,
+      "benchmark": 117.2995663767326,
+      "profit_factor": 0.9444497361008756,
+      "win_rate": 47.07692307692308,
+      "sharpe": -0.3965794091139811
+    }
+  ]
+}
