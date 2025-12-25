@@ -13,8 +13,16 @@ def main() -> int:
 
     symbol = os.getenv("AIPP_DEMO_SYMBOL", "BTCUSDT")
     interval = os.getenv("AIPP_DEMO_INTERVAL", "1h")
+    cross_asset = os.getenv("AIPP_DEMO_CROSS_ASSET", "false").lower() == "true"
 
-    res = client.search(symbol=symbol, interval=interval, q=60, f=24, top_k=10)
+    res = client.search(
+        symbol=symbol,
+        interval=interval,
+        q=60,
+        f=24,
+        top_k=10,
+        cross_asset=cross_asset,
+    )
 
     matches = res.get("matches") or []
     meta = res.get("meta") or {}
@@ -23,7 +31,7 @@ def main() -> int:
     print("DEMO 01 — SEARCH")
     print("=" * 78)
     print(f"Base URL: {base_url}")
-    print(f"Symbol: {symbol}  Interval: {interval}")
+    print(f"Symbol: {symbol}  Interval: {interval}  Cross-Asset: {cross_asset}")
     if meta:
         print(f"Meta: {meta}")
     print(f"Matches: {len(matches)}")
@@ -33,7 +41,8 @@ def main() -> int:
         sim = m.get("similarity")
         mid = m.get("id") or m.get("matchId")
         dt = m.get("date") or m.get("ts")
-        print(f"#{i}: id={mid} similarity={sim} date/ts={dt}")
+        msym = m.get("symbol") or symbol
+        print(f"#{i}: {msym:10s} id={mid} similarity={sim:.4f} date/ts={dt}")
 
     return 0
 

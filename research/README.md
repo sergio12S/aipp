@@ -8,6 +8,14 @@ This folder is for quant research workflows (analysis, charts, statistics, and M
 - Prefer reproducible notebooks: explicit parameters, explicit friction (fees/slippage), explicit time windows.
 - Focus on “research artifacts”: charts, distributions, regime breakdowns, and simple baselines.
 
+## Trader Value: Why use these?
+
+While the `showcase/` scripts focus on execution, these notebooks help you **optimize** your strategy:
+- **Calibrate**: Find the minimum similarity threshold required for profitability (`02`, `05`).
+- **Condition**: Adjust your risk based on the current market regime (`06`).
+- **Stress-Test**: Verify that your alpha survives realistic fees and slippage (`07`).
+- **Generalize**: Prove your pattern logic works across different assets (`09`).
+
 ## Notebooks
 
 - `01_quant_onepager_plotly.ipynb` — a notebook version of the investor one-pager with Plotly visuals:

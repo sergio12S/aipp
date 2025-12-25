@@ -33,6 +33,8 @@ def main() -> int:
         "--interval",
         os.getenv("AIPP_DEMO_INTERVAL", "1h"),
         "--no-stability",
+        "--grid-hint",
+        "--grid-hint-human",
         "--block-regimes",
         os.getenv("AIPP_BLOCK_REGIMES", "BEARISH_MOMENTUM,STABLE_DOWNTREND"),
     ]

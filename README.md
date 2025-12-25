@@ -19,6 +19,18 @@ pip install "aipricepatterns[rl]"
 pip install "aipricepatterns[research]"
 ```
 
+## Detailed Documentation
+
+To get the most out of the SDK, check out our specialized guides:
+
+- [**Overview & Concepts**](./docs/overview.md) – "Market Memory" and trading workflows.
+- [**Search & Discovery**](./docs/search_and_discovery.md) – Using scanners and cross-asset matching.
+- [**Validation & Risk**](./docs/validation_and_risk.md) – Backtesting and regime-based audits.
+- [**Execution & Grid Intel**](./docs/execution_and_grid.md) – Dynamic grid bots and price zones.
+- [**ML & RL Integration**](./docs/ml_and_rl.md) – Episode sampling and feature factories.
+- [**Examples & Case Studies**](./docs/examples_guide.md) – Real-world forensic audits and institutional proofs.
+- [**Research & Quant Workflows**](./docs/research_guide.md) – Calibration, stress-testing, and regime analysis.
+
 ## Quick Start
 
 ### 1. Initialize Client

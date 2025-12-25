@@ -6,7 +6,8 @@ This folder contains ready-to-use demo examples for presenting the SDK and CLI.
 
 **SDK (Python):**
 
-- **Pattern Search**: Find historical analogues (`Client.search`)
+- **Live Signals**: High-probability signals discovered by background scanners (`Client.get_signals`)
+- **Pattern Search**: Find historical analogues across one or many assets (`Client.search`)
 - **Metrics**: Aggregated metrics and risk analysis (`Client.get_pattern_metrics`)
 - **Grid Stats**: Statistics and recommendations for grid trading (`Client.get_grid_stats`)
 - **Recalc**: Historical replay of a specific point in time (`Client.recalc_patterns`)
@@ -70,7 +71,11 @@ aipp scan \
 **Python Equivalent:**
 
 ```bash
-python3 python-sdk/showcase/03_scan_watchlist.py
+# 1) Watchlist heartbeat + Grid Intel
+python3 showcase/03_scan_watchlist.py
+
+# 2) Live signals feed (discovery)
+python3 showcase/08_live_signals_feed.py
 ```
 
 ### 2) Trader Playbook (Idea → Reality Check → Attribution)
@@ -81,10 +86,13 @@ Goal: Take a candidate pattern signal, validate it with realistic costs, and und
 
 ```bash
 # 1) Retrieve similar historical patterns for a symbol/interval
-python3 python-sdk/showcase/01_search.py
+python3 showcase/01_search.py
 
-# 2) Walk-forward backtest + regime attribution (audit)
-python3 python-sdk/showcase/02_backtest_and_audit.py
+# 2) CROSS-ASSET discovery (finding patterns in other symbols)
+python3 showcase/09_cross_asset_discovery.py
+
+# 3) Walk-forward backtest + regime attribution (audit)
+python3 showcase/02_backtest_and_audit.py
 
 # 3) Investor-grade “reality check” with friction (fees + slippage)
 export AIPP_FEE_PCT="0.04"       # 0.04 = 0.04% per trade
@@ -113,14 +121,14 @@ Run:
 
 ```bash
 # One-pager narrative
-python3 python-sdk/showcase/00_investor_onepager.py
+python3 showcase/00_investor_onepager.py
 
 # Optional: RL “parallel universes” (context-aware episode sampling)
-python3 python-sdk/showcase/06_rl_parallel_universes.py
+python3 showcase/06_rl_parallel_universes.py
 
 # Optional: train a specialist policy + sanity baselines (requires extra deps)
 python3 -m pip install numpy gymnasium stable-baselines3
-python3 python-sdk/showcase/07_rl_train_specialist_sb3.py
+python3 showcase/07_rl_train_specialist_sb3.py
 ```
 
 Expected output artifacts:
