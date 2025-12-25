@@ -19,6 +19,16 @@ pip install "aipricepatterns[rl]"
 pip install "aipricepatterns[research]"
 ```
 
+## 🏢 For Institutional Partners
+
+AIPP provides a forensic, evidence-based approach to pattern recognition for Hedge Funds, Proprietary Trading Firms, and Quantitative Alpha Teams.
+
+See our **[Institutional Partnership Portal](./pitch/)** for:
+- **Pitch Deck**: High-level value proposition and technical edge.
+- **Audit Reports**: Leakage-free integrity audits (Look-ahead bias verification).
+- **Case Studies**: Verified performance during extreme events (SVB Crisis, Alpha Discovery).
+- **Impact Analysis**: Quantitative and Qualitative Sharpe-lift proof.
+
 ## Detailed Documentation
 
 To get the most out of the SDK, check out our specialized guides:
