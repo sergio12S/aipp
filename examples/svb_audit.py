@@ -62,7 +62,8 @@ def run_audit():
             print("\n>>> CONCLUSION: UNCERTAIN / HOLD")
 
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error during audit: {e}")
+        return
 
 
 if __name__ == "__main__":
