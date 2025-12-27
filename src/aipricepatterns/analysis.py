@@ -1,5 +1,7 @@
-from typing import List, Dict, Optional, Any
+from typing import Any, Dict, List
+
 import numpy as np
+
 from .client import Client
 
 
@@ -101,13 +103,13 @@ class BacktestAuditor:
 
         :param trades: List of trade objects from the backtest result.
         """
-        losing_trades = [t for t in trades if t.get("returnPct", 0) < 0]
+        losing_trades = [t for t in trades if t.get("actualReturnPct", 0) < 0]
         regime_counts = {}
 
         print(f"Analyzing {len(losing_trades)} losing trades...")
 
         for trade in losing_trades:
-            ts = trade.get("entryTime")
+            ts = trade.get("ts")
             if not ts:
                 continue
 

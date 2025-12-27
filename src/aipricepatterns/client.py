@@ -243,7 +243,7 @@ class Client:
         :param include_stats: Calculate equity curve and institutional metrics (Sharpe, Expectancy, etc.).
         :return: Dictionary containing:
             - totalSteps: Total steps in simulation.
-            - results: List of trade details (including neighborOffsets).
+            - trades: List of trade details (including neighborOffsets).
             - stats: Dictionary with metrics:
                 - expectancy: Average profit per trade.
                 - recoveryFactor: Total Return / Max Drawdown.
@@ -588,10 +588,10 @@ class Client:
         """
         Convert raw backtest results to a Pandas DataFrame.
         """
-        if "results" not in backtest_result:
+        if "trades" not in backtest_result:
             return pd.DataFrame()
 
-        df = pd.DataFrame(backtest_result["results"])
+        df = pd.DataFrame(backtest_result["trades"])
         if not df.empty and "ts" in df.columns:
             df["datetime"] = pd.to_datetime(df["ts"], unit="ms")
             df.set_index("datetime", inplace=True)
